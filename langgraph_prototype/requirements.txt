@@ -1,0 +1,7 @@
+langgraph
+langgraph-checkpoint-sqlite
+langchain-nvidia-ai-endpoints
+fastapi
+uvicorn
+python-dotenv
+pydantic

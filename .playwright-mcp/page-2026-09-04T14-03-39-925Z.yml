@@ -1,0 +1,83 @@
+- generic [ref=f1e2]:
+  - complementary [ref=f1e3]:
+    - generic [ref=f1e9]:
+      - generic [ref=f1e10]: Nemotron Agent
+      - generic [ref=f1e11]: LangGraph orchestrator
+    - button "New conversation" [ref=f1e12] [cursor=pointer]
+    - generic [ref=f1e15]:
+      - generic [ref=f1e16]: Workflow routes
+      - generic [ref=f1e21]:
+        - generic [ref=f1e22]: Simple parse
+        - generic [ref=f1e23]: Amount extraction
+      - generic [ref=f1e29]:
+        - generic [ref=f1e30]: Medium review
+        - generic [ref=f1e31]: Draft and validate
+      - generic [ref=f1e38]:
+        - generic [ref=f1e39]: Complex ingest
+        - generic [ref=f1e40]: Quality-gated batch
+      - generic [ref=f1e47]:
+        - generic [ref=f1e48]: Jira transition
+        - generic [ref=f1e49]: Inspect, mutate, verify
+    - generic [ref=f1e50]:
+      - generic [ref=f1e52]: Runs pause at validation failures and resume from the SQLite checkpoint after your decision.
+      - generic [ref=f1e57]: Powered by NVIDIA Nemotron
+  - generic [ref=f1e58]:
+    - generic [ref=f1e59]:
+      - generic [ref=f1e62]:
+        - heading "Agent workspace" [level=1] [ref=f1e63]
+        - paragraph [ref=f1e64]: nemotron-3-super-120b-a12b
+      - generic [ref=f1e65]:
+        - generic [ref=f1e66]: NVIDIA connected
+        - generic "Use deterministic local responses without API calls" [ref=f1e69] [cursor=pointer]:
+          - checkbox "Demo mode" [checked]
+          - generic [ref=f1e72]: Demo mode
+        - button "New conversation" [ref=f1e73] [cursor=pointer]
+    - generic [ref=f1e152]:
+      - generic [ref=f1e153]: Move DEMO-1 from Pending to Approved and simulate a recoverable failure at step B.
+      - generic [ref=f1e160]:
+        - generic [ref=f1e161]:
+          - generic [ref=f1e162]: Nemotron agent
+          - generic [ref=f1e163]: waiting for you
+        - generic [ref=f1e164]:
+          - generic [ref=f1e165]:
+            - generic [ref=f1e166]: Paused · TRANSIENT needs a decision
+            - button "View trace" [ref=f1e169] [cursor=pointer]
+          - generic [ref=f1e173]:
+            - generic [ref=f1e174]:
+              - generic [ref=f1e175]:
+                - generic "begin_attempt" [ref=f1e176]
+                - generic [ref=f1e177]:
+                  - text: Starting Jira workflow attempt 1.
+                  - group [ref=f1e178]:
+                    - generic "inspect state" [ref=f1e179] [cursor=pointer]
+              - generic [ref=f1e180]:
+                - generic "A_inspect" [ref=f1e181]
+                - generic [ref=f1e182]:
+                  - text: Inspected Jira issue in
+                  - strong [ref=f1e183]: Pending
+                  - text: ". Available destinations: Approved, Rejected."
+                  - group [ref=f1e184]:
+                    - generic "inspect state" [ref=f1e185] [cursor=pointer]
+              - generic [ref=f1e186]:
+                - generic "B_transition" [ref=f1e187]
+                - generic [ref=f1e188]:
+                  - text: "Jira transition failed: Injected recoverable failure at step B before the Jira mutation."
+                  - group [ref=f1e189]:
+                    - generic "inspect state" [ref=f1e190] [cursor=pointer]
+            - generic [ref=f1e191]:
+              - generic [ref=f1e192]: Starting
+              - generic [ref=f1e193]: checkpointed
+        - generic [ref=f1e194]:
+          - generic [ref=f1e199]:
+            - generic [ref=f1e200]: The workflow needs your approval
+            - generic [ref=f1e201]: Injected recoverable failure at step B before the Jira mutation.
+          - generic [ref=f1e202]:
+            - button "Yes, let it correct and retry" [ref=f1e203] [cursor=pointer]
+            - button "No, stop here" [ref=f1e207] [cursor=pointer]
+    - generic [ref=f1e116]:
+      - generic [ref=f1e117]:
+        - textbox "Ask the agent to do something..." [disabled] [ref=f1e118]
+        - generic [ref=f1e119]:
+          - generic [ref=f1e120]: Enter to send · Shift+Enter for a new line
+          - button "Answer the approval request above" [disabled] [ref=f1e215]
+      - generic [ref=f1e128]: Agent actions are visible in the conversation and recoverable failures always wait for your approval.

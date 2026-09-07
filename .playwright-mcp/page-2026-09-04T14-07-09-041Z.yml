@@ -1,0 +1,57 @@
+- generic [ref=f2e2]:
+  - complementary [ref=f2e3]:
+    - generic [ref=f2e9]:
+      - generic [ref=f2e10]: Nemotron Agent
+      - generic [ref=f2e11]: LangGraph orchestrator
+    - button "New conversation" [ref=f2e12] [cursor=pointer]
+    - generic [ref=f2e15]:
+      - generic [ref=f2e16]: Workflow routes
+      - generic [ref=f2e21]:
+        - generic [ref=f2e22]: Simple parse
+        - generic [ref=f2e23]: Amount extraction
+      - generic [ref=f2e29]:
+        - generic [ref=f2e30]: Medium review
+        - generic [ref=f2e31]: Draft and validate
+      - generic [ref=f2e38]:
+        - generic [ref=f2e39]: Complex ingest
+        - generic [ref=f2e40]: Quality-gated batch
+      - generic [ref=f2e47]:
+        - generic [ref=f2e48]: Jira transition
+        - generic [ref=f2e49]: Inspect, mutate, verify
+    - generic [ref=f2e50]:
+      - generic [ref=f2e52]: Runs pause at validation failures and resume from the SQLite checkpoint after your decision.
+      - generic [ref=f2e57]: Powered by NVIDIA Nemotron
+  - generic [ref=f2e58]:
+    - generic [ref=f2e59]:
+      - generic [ref=f2e62]:
+        - heading "Agent workspace" [level=1] [ref=f2e63]
+        - paragraph [ref=f2e64]: nemotron-3-super-120b-a12b
+      - generic [ref=f2e65]:
+        - generic [ref=f2e66]: NVIDIA connected · Jira setup needed
+        - generic "Use deterministic local responses without API calls" [ref=f2e69] [cursor=pointer]:
+          - checkbox "Demo mode"
+          - generic [ref=f2e72]: Demo mode
+        - button "New conversation" [ref=f2e73] [cursor=pointer]
+    - generic [ref=f2e79]:
+      - heading "What should the agent work on?" [level=2] [ref=f2e84]
+      - paragraph [ref=f2e85]: Send one request. The orchestrator will choose a workflow, execute each step, and ask before it retries a recoverable failure.
+      - generic [ref=f2e86]:
+        - button "Resolve an unclear amount Tests structured extraction and approval-based retry." [ref=f2e87] [cursor=pointer]:
+          - generic [ref=f2e88]: Resolve an unclear amount
+          - paragraph [ref=f2e93]: Tests structured extraction and approval-based retry.
+        - button "Prepare a welcome message Tests missing data validation and editorial review." [ref=f2e94] [cursor=pointer]:
+          - generic [ref=f2e95]: Prepare a welcome message
+          - paragraph [ref=f2e100]: Tests missing data validation and editorial review.
+        - button "Process a transaction batch Tests flaky sync retries and quality approval." [ref=f2e101] [cursor=pointer]:
+          - generic [ref=f2e102]: Process a transaction batch
+          - paragraph [ref=f2e107]: Tests flaky sync retries and quality approval.
+        - button "Resume a Jira transition Tests real status validation, mutation, verification, and node-level resume." [ref=f2e108] [cursor=pointer]:
+          - generic [ref=f2e109]: Resume a Jira transition
+          - paragraph [ref=f2e114]: Tests real status validation, mutation, verification, and node-level resume.
+    - generic [ref=f2e116]:
+      - generic [ref=f2e117]:
+        - textbox "Ask the agent to do something..." [ref=f2e118]
+        - generic [ref=f2e119]:
+          - generic [ref=f2e120]: Enter to send · Shift+Enter for a new line
+          - button "Send request" [ref=f2e125] [cursor=pointer]
+      - generic [ref=f2e128]: Agent actions are visible in the conversation and recoverable failures always wait for your approval.

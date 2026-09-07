@@ -1,0 +1,27 @@
+- generic [ref=e49]:
+  - generic [ref=e50]:
+    - heading "Agent workspace" [level=1] [ref=e54]
+    - generic [ref=e56]:
+      - generic "Use deterministic local responses without API calls" [ref=e60] [cursor=pointer]:
+        - checkbox [checked] [active]
+      - button "New conversation" [ref=e64] [cursor=pointer]
+  - generic [ref=e70]:
+    - heading "What should the agent work on?" [level=2] [ref=e75]
+    - paragraph [ref=e76]: Send one request. The orchestrator will choose a workflow, execute each step, and ask before it retries a recoverable failure.
+    - generic [ref=e77]:
+      - button "Resolve an unclear amount Tests structured extraction and approval-based retry." [ref=e78] [cursor=pointer]:
+        - generic [ref=e79]: Resolve an unclear amount
+        - paragraph [ref=e84]: Tests structured extraction and approval-based retry.
+      - button "Prepare a welcome message Tests missing data validation and editorial review." [ref=e85] [cursor=pointer]:
+        - generic [ref=e86]: Prepare a welcome message
+        - paragraph [ref=e91]: Tests missing data validation and editorial review.
+      - button "Process a transaction batch Tests flaky sync retries and quality approval." [ref=e92] [cursor=pointer]:
+        - generic [ref=e93]: Process a transaction batch
+        - paragraph [ref=e98]: Tests flaky sync retries and quality approval.
+  - generic [ref=e100]:
+    - generic [ref=e101]:
+      - textbox "Ask the agent to do something..." [ref=e102]
+      - generic [ref=e103]:
+        - generic [ref=e104]: Enter to send · Shift+Enter for a new line
+        - button "Send request" [ref=e109] [cursor=pointer]
+    - generic [ref=e112]: Agent actions are visible in the conversation and recoverable failures always wait for your approval.

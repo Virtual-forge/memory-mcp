@@ -1,0 +1,95 @@
+- generic [ref=e49]:
+  - generic [ref=e50]:
+    - heading "Agent workspace" [level=1] [ref=e54]
+    - generic [ref=e56]:
+      - generic "Use deterministic local responses without API calls" [ref=e60] [cursor=pointer]:
+        - checkbox [checked]
+      - button "New conversation" [ref=e64] [cursor=pointer]
+  - generic [ref=e116]:
+    - generic [ref=e117]: Ingest the transaction batch and run its quality gate.
+    - generic [ref=e124]:
+      - generic [ref=e125]:
+        - generic [ref=e126]: Nemotron agent
+        - generic [ref=e127]: waiting for you
+      - generic [ref=e128]:
+        - generic [ref=e129]:
+          - generic [ref=e130]: Paused · another decision needed
+          - button "View trace" [ref=e133] [cursor=pointer]
+        - generic [ref=e137]:
+          - generic [ref=e138]:
+            - generic [ref=e139]:
+              - generic "extract" [ref=e140]
+              - generic [ref=e141]:
+                - text: Batch extraction received 4 incoming records.
+                - group [ref=e142]:
+                  - generic "inspect state" [ref=e143] [cursor=pointer]
+            - generic [ref=e144]:
+              - generic "transform" [ref=e145]
+              - generic [ref=e146]:
+                - text: "Transformed batch: 3/4 records valid."
+                - group [ref=e147]:
+                  - generic "inspect state" [ref=e148] [cursor=pointer]
+            - generic [ref=e149]:
+              - generic "sync_external" [ref=e150]
+              - generic [ref=e151]:
+                - text: "External dependency alert: External pricing service timed out (simulated flaky dependency)."
+                - group [ref=e152]:
+                  - generic "inspect state" [ref=e153] [cursor=pointer]
+            - generic [ref=e154]:
+              - generic "run_workflow" [ref=e155]
+              - generic [ref=e156]:
+                - text: "Workflow completed attempt 1:"
+                - strong [ref=e157]: FAILURE
+                - group [ref=e158]:
+                  - generic "inspect state" [ref=e159] [cursor=pointer]
+            - generic [ref=e195]:
+              - generic "request_retry_approval" [ref=e196]
+              - generic [ref=e197]:
+                - text: "HITL decision applied:"
+                - strong [ref=e198]: APPROVE
+                - text: .
+                - group [ref=e199]:
+                  - generic "inspect state" [ref=e200] [cursor=pointer]
+            - generic [ref=e201]:
+              - generic "extract" [ref=e202]
+              - generic [ref=e203]:
+                - text: Batch extraction received 4 incoming records.
+                - group [ref=e204]:
+                  - generic "inspect state" [ref=e205] [cursor=pointer]
+            - generic [ref=e206]:
+              - generic "transform" [ref=e207]
+              - generic [ref=e208]:
+                - text: "Transformed batch: 3/4 records valid."
+                - group [ref=e209]:
+                  - generic "inspect state" [ref=e210] [cursor=pointer]
+            - generic [ref=e211]:
+              - generic "sync_external" [ref=e212]
+              - generic [ref=e213]:
+                - text: "External dependency alert: External pricing service timed out (simulated flaky dependency)."
+                - group [ref=e214]:
+                  - generic "inspect state" [ref=e215] [cursor=pointer]
+            - generic [ref=e216]:
+              - generic "run_workflow" [ref=e217]
+              - generic [ref=e218]:
+                - text: "Workflow completed attempt 2:"
+                - strong [ref=e219]: FAILURE
+                - group [ref=e220]:
+                  - generic "inspect state" [ref=e221] [cursor=pointer]
+          - generic [ref=e160]:
+            - generic [ref=e161]: Starting
+            - generic [ref=e162]: checkpointed
+      - generic [ref=e163]:
+        - generic [ref=e168]:
+          - generic [ref=e169]: The workflow needs your approval
+          - generic [ref=e170]: External pricing service timed out (simulated flaky dependency).
+        - generic [ref=e171]:
+          - button "Yes, let it correct and retry" [ref=e172] [cursor=pointer]
+          - button "No, stop here" [ref=e176] [cursor=pointer]
+      - generic [ref=e229]: You approved a self-correction. Resuming the checkpoint...
+  - generic [ref=e100]:
+    - generic [ref=e101]:
+      - textbox "Ask the agent to do something..." [disabled] [ref=e102]
+      - generic [ref=e103]:
+        - generic [ref=e104]: Enter to send · Shift+Enter for a new line
+        - button "Answer the approval request above" [disabled] [ref=e184]
+    - generic [ref=e112]: Agent actions are visible in the conversation and recoverable failures always wait for your approval.

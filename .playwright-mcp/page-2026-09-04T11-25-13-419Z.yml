@@ -1,0 +1,95 @@
+- generic [ref=f1e3]:
+  - generic [ref=f1e4]:
+    - heading "Agent workspace" [level=1] [ref=f1e8]
+    - generic [ref=f1e9]:
+      - generic "Use deterministic local responses without API calls" [ref=f1e10] [cursor=pointer]:
+        - checkbox [checked]
+      - button "New conversation" [ref=f1e13] [cursor=pointer]
+  - generic [ref=f1e65]:
+    - generic [ref=f1e66]: Ingest the transaction batch and run its quality gate.
+    - generic [ref=f1e73]:
+      - generic [ref=f1e74]:
+        - generic [ref=f1e75]: Nemotron agent
+        - generic [ref=f1e76]: waiting for you
+      - generic [ref=f1e77]:
+        - generic [ref=f1e78]:
+          - generic [ref=f1e79]: Paused · another decision needed
+          - button "View trace" [ref=f1e82] [cursor=pointer]
+        - generic [ref=f1e86]:
+          - generic [ref=f1e87]:
+            - generic [ref=f1e88]:
+              - generic "extract" [ref=f1e89]
+              - generic [ref=f1e90]:
+                - text: Batch extraction received 4 incoming records.
+                - group [ref=f1e91]:
+                  - generic "inspect state" [ref=f1e92] [cursor=pointer]
+            - generic [ref=f1e93]:
+              - generic "transform" [ref=f1e94]
+              - generic [ref=f1e95]:
+                - text: "Transformed batch: 3/4 records valid."
+                - group [ref=f1e96]:
+                  - generic "inspect state" [ref=f1e97] [cursor=pointer]
+            - generic [ref=f1e98]:
+              - generic "sync_external" [ref=f1e99]
+              - generic [ref=f1e100]:
+                - text: "External dependency alert: External pricing service timed out (simulated flaky dependency)."
+                - group [ref=f1e101]:
+                  - generic "inspect state" [ref=f1e102] [cursor=pointer]
+            - generic [ref=f1e103]:
+              - generic "run_workflow" [ref=f1e104]
+              - generic [ref=f1e105]:
+                - text: "Workflow completed attempt 1:"
+                - strong [ref=f1e106]: FAILURE
+                - group [ref=f1e107]:
+                  - generic "inspect state" [ref=f1e108] [cursor=pointer]
+            - generic [ref=f1e144]:
+              - generic "request_retry_approval" [ref=f1e145]
+              - generic [ref=f1e146]:
+                - text: "HITL decision applied:"
+                - strong [ref=f1e147]: APPROVE
+                - text: .
+                - group [ref=f1e148]:
+                  - generic "inspect state" [ref=f1e149] [cursor=pointer]
+            - generic [ref=f1e150]:
+              - generic "extract" [ref=f1e151]
+              - generic [ref=f1e152]:
+                - text: Batch extraction received 4 incoming records.
+                - group [ref=f1e153]:
+                  - generic "inspect state" [ref=f1e154] [cursor=pointer]
+            - generic [ref=f1e155]:
+              - generic "transform" [ref=f1e156]
+              - generic [ref=f1e157]:
+                - text: "Transformed batch: 3/4 records valid."
+                - group [ref=f1e158]:
+                  - generic "inspect state" [ref=f1e159] [cursor=pointer]
+            - generic [ref=f1e160]:
+              - generic "sync_external" [ref=f1e161]
+              - generic [ref=f1e162]:
+                - text: "External dependency alert: External pricing service timed out (simulated flaky dependency)."
+                - group [ref=f1e163]:
+                  - generic "inspect state" [ref=f1e164] [cursor=pointer]
+            - generic [ref=f1e165]:
+              - generic "run_workflow" [ref=f1e166]
+              - generic [ref=f1e167]:
+                - text: "Workflow completed attempt 2:"
+                - strong [ref=f1e168]: FAILURE
+                - group [ref=f1e169]:
+                  - generic "inspect state" [ref=f1e170] [cursor=pointer]
+          - generic [ref=f1e109]:
+            - generic [ref=f1e110]: Starting
+            - generic [ref=f1e111]: checkpointed
+      - generic [ref=f1e112]:
+        - generic [ref=f1e117]:
+          - generic [ref=f1e118]: The workflow needs your approval
+          - generic [ref=f1e119]: External pricing service timed out (simulated flaky dependency).
+        - generic [ref=f1e120]:
+          - button "Yes, let it correct and retry" [ref=f1e121] [cursor=pointer]
+          - button "No, stop here" [ref=f1e125] [cursor=pointer]
+      - generic [ref=f1e178]: You approved a self-correction. Resuming the checkpoint...
+  - generic [ref=f1e49]:
+    - generic [ref=f1e50]:
+      - textbox "Ask the agent to do something..." [disabled] [ref=f1e51]
+      - generic [ref=f1e52]:
+        - generic [ref=f1e53]: Enter to send · Shift+Enter for a new line
+        - button "Answer the approval request above" [disabled] [ref=f1e133]
+    - generic [ref=f1e61]: Agent actions are visible in the conversation and recoverable failures always wait for your approval.

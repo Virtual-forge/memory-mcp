@@ -1,0 +1,54 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e9]:
+      - generic [ref=e10]: Nemotron Agent
+      - generic [ref=e11]: LangGraph orchestrator
+    - button "New conversation" [ref=e12] [cursor=pointer]
+    - generic [ref=e15]:
+      - generic [ref=e16]: Workflow routes
+      - generic [ref=e21]:
+        - generic [ref=e22]: Simple parse
+        - generic [ref=e23]: Amount extraction
+      - generic [ref=e29]:
+        - generic [ref=e30]: Medium review
+        - generic [ref=e31]: Draft and validate
+      - generic [ref=e38]:
+        - generic [ref=e39]: Complex ingest
+        - generic [ref=e40]: Quality-gated batch
+      - generic [ref=e47]:
+        - generic [ref=e48]: Jira transition
+        - generic [ref=e49]: Inspect, mutate, verify
+    - generic [ref=e50]:
+      - generic [ref=e52]: Runs pause at validation failures and resume from the SQLite checkpoint after your decision.
+      - generic [ref=e57]: Powered by NVIDIA Nemotron
+  - generic [ref=e58]:
+    - generic [ref=e59]:
+      - generic [ref=e62]:
+        - heading "Agent workspace" [level=1] [ref=e63]
+        - paragraph [ref=e64]: nemotron-3-super-120b-a12b
+      - generic [ref=e65]:
+        - generic [ref=e66]: NVIDIA connected
+        - generic "Use deterministic local responses without API calls" [ref=e69] [cursor=pointer]:
+          - checkbox "Demo mode"
+          - generic [ref=e72]: Demo mode
+        - button "New conversation" [ref=e73] [cursor=pointer]
+    - generic [ref=e79]:
+      - heading "What should the agent work on?" [level=2] [ref=e84]
+      - paragraph [ref=e85]: Send one request. The orchestrator will choose a workflow, execute each step, and ask before it retries a recoverable failure.
+      - generic [ref=e86]:
+        - button "Resolve an unclear amount Tests structured extraction and approval-based retry." [ref=e87] [cursor=pointer]:
+          - generic [ref=e88]: Resolve an unclear amount
+          - paragraph [ref=e93]: Tests structured extraction and approval-based retry.
+        - button "Prepare a welcome message Tests missing data validation and editorial review." [ref=e94] [cursor=pointer]:
+          - generic [ref=e95]: Prepare a welcome message
+          - paragraph [ref=e100]: Tests missing data validation and editorial review.
+        - button "Process a transaction batch Tests flaky sync retries and quality approval." [ref=e101] [cursor=pointer]:
+          - generic [ref=e102]: Process a transaction batch
+          - paragraph [ref=e107]: Tests flaky sync retries and quality approval.
+    - generic [ref=e109]:
+      - generic [ref=e110]:
+        - textbox "Ask the agent to do something..." [ref=e111]
+        - generic [ref=e112]:
+          - generic [ref=e113]: Enter to send · Shift+Enter for a new line
+          - button "Send request" [ref=e118] [cursor=pointer]
+      - generic [ref=e121]: Agent actions are visible in the conversation and recoverable failures always wait for your approval.

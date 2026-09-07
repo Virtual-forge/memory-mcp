@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nemotron Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f7f8f5;
+      --canvas: #ffffff;
+      --ink: #1b211d;
+      --muted: #778078;
+      --faint: #a4aca6;
+      --line: #e7ebe7;
+      --line-strong: #dce3dc;
+      --green: #76b900;
+      --green-deep: #4c7b00;
+      --green-wash: #f0f7e7;
+      --blue: #2e6b8b;
+      --blue-wash: #edf6fa;
+      --amber: #9a6500;
+      --amber-wash: #fff8e7;
+      --rose: #b24747;
+      --rose-wash: #fff1f1;
+      --shadow: 0 16px 50px rgba(36, 53, 38, 0.07);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "DM Sans", "Segoe UI", sans-serif;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .55; }
+    ::selection { background: #d8edb6; }
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d8ded8; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #bdc7bd; }
+
+    .app {
+      height: 100%;
+      height: 100dvh;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 252px minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .sidebar {
+      min-height: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      padding: 19px 14px 16px;
+      background: #f0f3ee;
+      border-right: 1px solid var(--line);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 9px;
+    }
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      color: #17200d;
+      background: var(--green);
+      border-radius: 10px;
+      box-shadow: 0 5px 16px rgba(118, 185, 0, .22);
+    }
+    .brand-mark svg { width: 16px; height: 16px; stroke-width: 2.5; }
+    .brand-name { font-size: 14px; font-weight: 700; letter-spacing: -.01em; }
+    .brand-subtitle { margin-top: 2px; color: var(--muted); font-size: 10px; letter-spacing: .01em; }
+
+    .new-chat {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 11px;
+      color: var(--ink);
+      background: var(--canvas);
+      border: 1px solid var(--line-strong);
+      border-radius: 11px;
+      box-shadow: 0 2px 8px rgba(45, 65, 47, .03);
+      font-size: 12px;
+      font-weight: 650;
+      text-align: left;
+      transition: border-color .18s, box-shadow .18s, transform .18s;
+    }
+    .new-chat:hover { border-color: #b9cda8; box-shadow: 0 7px 18px rgba(45, 65, 47, .08); transform: translateY(-1px); }
+    .new-chat svg { width: 15px; height: 15px; color: var(--green-deep); }
+
+    .side-group { display: grid; gap: 7px; }
+    .side-label {
+      padding: 0 10px;
+      color: var(--faint);
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .workflow-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 9px;
+      color: #59635b;
+    }
+    .workflow-row.active { color: var(--ink); background: rgba(255, 255, 255, .72); }
+    .workflow-icon {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: rgba(255,255,255,.72);
+    }
+    .workflow-icon svg { width: 13px; height: 13px; }
+    .workflow-row:nth-child(2) .workflow-icon { color: #47839b; }
+    .workflow-row:nth-child(3) .workflow-icon { color: #9b6c09; }
+    .workflow-row:nth-child(4) .workflow-icon { color: #715a98; }
+    .workflow-name { font-size: 12px; font-weight: 600; }
+    .workflow-meta { margin-top: 2px; color: var(--muted); font-size: 10px; }
+
+    .sidebar-footer { margin-top: auto; display: grid; gap: 12px; padding: 0 9px; }
+    .checkpoint-note { display: flex; gap: 8px; color: var(--muted); font-size: 10px; line-height: 1.45; }
+    .checkpoint-note svg { width: 14px; height: 14px; color: var(--green-deep); flex: 0 0 auto; margin-top: 1px; }
+    .sidebar-rule { height: 1px; background: var(--line-strong); }
+    .model-note { color: var(--faint); font-size: 10px; letter-spacing: .02em; }
+
+    .workspace { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; background: var(--canvas); }
+    .topbar {
+      flex: 0 0 auto;
+      height: 61px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 28px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.84);
+      backdrop-filter: blur(12px);
+      z-index: 2;
+    }
+    .topbar-title { display: flex; align-items: center; gap: 9px; min-width: 0; }
+    .topbar-title h1 { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: -.01em; }
+    .topbar-title p { margin: 3px 0 0; color: var(--muted); font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(118,185,0,.12); }
+    .topbar-actions { display: flex; align-items: center; gap: 8px; }
+    .status-pill, .mode-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 30px;
+      padding: 0 10px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fbfcfa;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #a6afa7; }
+    .status-dot.ready { background: var(--green); }
+    .status-dot.warn { background: #d89a18; }
+    .mode-switch { gap: 6px; color: #616a63; cursor: pointer; }
+    .mode-switch input { position: absolute; opacity: 0; pointer-events: none; }
+    .switch-track { width: 24px; height: 14px; padding: 2px; background: #d4dad4; border-radius: 999px; transition: background .18s; }
+    .switch-thumb { display: block; width: 10px; height: 10px; background: white; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: transform .18s; }
+    .mode-switch input:checked + .switch-track { background: var(--green); }
+    .mode-switch input:checked + .switch-track .switch-thumb { transform: translateX(10px); }
+    .icon-button { width: 30px; height: 30px; display: grid; place-items: center; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 9px; }
+    .icon-button:hover { color: var(--ink); border-color: var(--line); background: #fafcf9; }
+    .icon-button svg { width: 15px; height: 15px; }
+
+    .chat-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: smooth; }
+    .conversation { width: min(820px, calc(100% - 48px)); margin: 0 auto; padding: 58px 0 34px; }
+    .welcome { min-height: calc(100vh - 270px); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 0 50px; text-align: center; }
+    .welcome-mark { width: 48px; height: 48px; display: grid; place-items: center; color: #29400f; background: #e8f3d8; border: 1px solid #d6e8bd; border-radius: 16px; }
+    .welcome-mark svg { width: 23px; height: 23px; }
+    .welcome h2 { margin: 20px 0 8px; color: var(--ink); font-size: clamp(24px, 3vw, 34px); line-height: 1.12; letter-spacing: -.045em; }
+    .welcome p { max-width: 500px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .suggestions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; width: 100%; max-width: 700px; margin-top: 29px; }
+    .suggestion { min-height: 82px; padding: 12px; color: var(--ink); background: #fbfcfa; border: 1px solid var(--line); border-radius: 12px; text-align: left; transition: border-color .18s, box-shadow .18s, transform .18s; }
+    .suggestion:hover { border-color: #c2d6ae; box-shadow: 0 8px 20px rgba(53,83,49,.08); transform: translateY(-2px); }
+    .suggestion-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; font-weight: 700; }
+    .suggestion-head svg { width: 13px; height: 13px; color: var(--green-deep); }
+    .suggestion p { margin: 7px 0 0; color: var(--muted); font-size: 10px; line-height: 1.4; }
+    .jira-suggestion { grid-column: 1 / -1; min-height: 64px; }
+
+    .messages { display: grid; gap: 34px; }
+    .message-row { display: flex; gap: 13px; animation: message-in .25s ease-out both; }
+    @keyframes message-in { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .message-row.user { justify-content: flex-end; }
+    .user-bubble { max-width: min(620px, 82%); padding: 12px 15px; color: #24301f; background: #eef5e8; border: 1px solid #dce9d2; border-radius: 17px 17px 5px 17px; font-size: 13px; line-height: 1.55; white-space: pre-wrap; }
+    .assistant-avatar { width: 28px; height: 28px; display: grid; place-items: center; flex: 0 0 auto; color: #29400f; background: #e8f3d8; border: 1px solid #d6e8bd; border-radius: 10px; }
+    .assistant-avatar svg { width: 15px; height: 15px; }
+    .assistant-body { min-width: 0; flex: 1; padding-top: 1px; }
+    .assistant-label { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+    .assistant-label .label-live { color: var(--green-deep); font-weight: 600; letter-spacing: 0; text-transform: none; }
+
+    .trace {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: #fbfcfa;
+      box-shadow: 0 4px 16px rgba(47, 67, 48, .03);
+    }
+    .trace-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 13px; }
+    .trace-title { display: flex; align-items: center; gap: 8px; color: #475249; font-size: 11px; font-weight: 650; }
+    .trace-state { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+    .trace-state.thinking { animation: blink 1.2s ease-in-out infinite; }
+    .trace-state.paused { background: #d99a1a; box-shadow: 0 0 0 4px rgba(217,154,26,.12); }
+    .trace-state.done { background: #6c8b70; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+    .trace-toggle { display: inline-flex; align-items: center; gap: 5px; padding: 3px 5px; color: var(--muted); background: transparent; border: 0; font-size: 10px; }
+    .trace-toggle:hover { color: var(--ink); }
+    .trace-toggle svg { width: 13px; height: 13px; transition: transform .18s; }
+    .trace.collapsed .trace-toggle svg { transform: rotate(-90deg); }
+    .trace-content { padding: 0 13px 11px; border-top: 1px solid var(--line); }
+    .trace.collapsed .trace-content { display: none; }
+    .step-list { display: grid; gap: 7px; padding-top: 10px; }
+    .step { display: grid; grid-template-columns: 77px minmax(0,1fr); align-items: start; gap: 9px; color: #59635b; font-size: 11px; line-height: 1.45; }
+    .step-node { width: max-content; max-width: 77px; overflow: hidden; padding: 2px 6px; color: #627065; background: #f1f4f0; border: 1px solid #e3e9e2; border-radius: 5px; font-family: "IBM Plex Mono", Consolas, monospace; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+    .step-summary { min-width: 0; }
+    .step-summary strong { color: #374339; font-weight: 700; }
+    .step-details { margin-top: 5px; }
+    .step-details summary { color: var(--faint); cursor: pointer; font-family: "IBM Plex Mono", Consolas, monospace; font-size: 9px; }
+    .step-details pre { max-height: 145px; overflow: auto; margin: 5px 0 0; padding: 8px; color: #657166; background: #f4f7f3; border-radius: 7px; font-size: 9px; line-height: 1.45; white-space: pre-wrap; word-break: break-word; }
+    .trace-meta { display: flex; gap: 8px; padding-top: 10px; color: var(--faint); font-size: 9px; }
+    .trace-meta span { padding: 2px 6px; background: #f1f4f0; border-radius: 999px; }
+
+    .approval-card { margin-top: 12px; padding: 14px; border: 1px solid #eedcae; border-radius: 13px; background: var(--amber-wash); }
+    .approval-top { display: flex; align-items: flex-start; gap: 9px; }
+    .approval-icon { width: 27px; height: 27px; display: grid; place-items: center; flex: 0 0 auto; color: var(--amber); background: #fff2c9; border-radius: 9px; }
+    .approval-icon svg { width: 15px; height: 15px; }
+    .approval-title { color: #6c4a04; font-size: 11px; font-weight: 750; }
+    .approval-copy { margin-top: 4px; color: #806735; font-size: 11px; line-height: 1.5; white-space: pre-line; }
+    .approval-input { width: 100%; min-height: 32px; margin-top: 9px; padding: 7px 9px; color: #5f4d27; background: rgba(255,255,255,.72); border: 1px solid #e6cf92; border-radius: 7px; outline: 0; font-size: 11px; }
+    .approval-input:focus { border-color: #c89e3b; box-shadow: 0 0 0 3px rgba(200,158,59,.12); }
+    .approval-input::placeholder { color: #a58e5d; }
+    .approval-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .approval-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 31px; padding: 0 11px; border-radius: 8px; font-size: 10px; font-weight: 700; transition: transform .18s, box-shadow .18s; }
+    .approval-actions button:hover { transform: translateY(-1px); }
+    .approve { color: #20300f; background: #a8d85d; border: 1px solid #91c445; box-shadow: 0 4px 10px rgba(118,185,0,.16); }
+    .reject { color: #934545; background: transparent; border: 1px solid #e7bcbc; }
+    .approval-actions svg { width: 13px; height: 13px; }
+    .decision-note { display: inline-flex; align-items: center; gap: 6px; margin-top: 11px; color: var(--muted); font-size: 10px; }
+    .decision-note svg { width: 13px; height: 13px; }
+
+    .answer { margin-top: 13px; color: #303a32; font-size: 13px; line-height: 1.65; }
+    .answer strong { color: #1b271d; font-weight: 750; }
+    .answer code { padding: 2px 5px; color: var(--green-deep); background: var(--green-wash); border-radius: 4px; font-family: "SFMono-Regular", Consolas, monospace; font-size: 11px; }
+    .answer blockquote { margin: 8px 0; padding: 7px 11px; color: #5d695f; border-left: 2px solid #b7d58d; background: #fafcf8; }
+    .answer pre { overflow: auto; margin: 8px 0; padding: 10px; color: #59655a; background: #f4f7f3; border-radius: 8px; font-size: 10px; line-height: 1.5; }
+    .error-answer { padding: 10px 12px; color: var(--rose); background: var(--rose-wash); border: 1px solid #f1caca; border-radius: 9px; font-size: 11px; }
+
+    .composer-wrap { flex: 0 0 auto; padding: 10px 24px 20px; background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 26%); }
+    .composer { width: min(820px, 100%); margin: 0 auto; }
+    .composer-box { padding: 8px 9px 8px 14px; border: 1px solid var(--line-strong); border-radius: 16px; background: #fff; box-shadow: var(--shadow); transition: border-color .18s, box-shadow .18s; }
+    .composer-box:focus-within { border-color: #a9cb7d; box-shadow: 0 0 0 3px rgba(118,185,0,.1), var(--shadow); }
+    .prompt { display: block; width: 100%; max-height: 130px; min-height: 30px; padding: 5px 0; color: var(--ink); background: transparent; border: 0; outline: 0; resize: none; font-size: 13px; line-height: 1.45; }
+    .prompt::placeholder { color: #9ba49c; }
+    .composer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 6px; }
+    .composer-hint { display: flex; align-items: center; gap: 6px; color: var(--faint); font-size: 10px; }
+    .composer-hint svg { width: 13px; height: 13px; color: var(--green-deep); }
+    .send-button { width: 31px; height: 31px; display: grid; place-items: center; color: #18240d; background: var(--green); border: 0; border-radius: 10px; transition: background .18s, transform .18s; }
+    .send-button:hover:not(:disabled) { background: #87cc0a; transform: translateY(-1px); }
+    .send-button svg { width: 15px; height: 15px; stroke-width: 2.5; }
+    .composer-disclaimer { margin-top: 8px; color: #a2aaa3; font-size: 9px; text-align: center; }
+
+    .hidden { display: none !important; }
+    @media (max-width: 820px) {
+      .app { grid-template-columns: 1fr; height: 100dvh; }
+      .sidebar { display: none; }
+      .topbar { padding: 0 16px; }
+      .conversation { width: min(100% - 30px, 700px); padding-top: 32px; }
+      .composer-wrap { padding: 8px 15px 14px; }
+      .suggestions { grid-template-columns: 1fr; max-width: 340px; }
+      .welcome { min-height: calc(100vh - 235px); }
+      .status-pill { display: none; }
+    }
+    @media (max-width: 480px) {
+      .topbar-title p { display: none; }
+      .mode-switch { padding: 0 8px; }
+      .mode-switch > span:last-child { display: none; }
+      .user-bubble { max-width: 90%; }
+      .step { grid-template-columns: 68px minmax(0,1fr); gap: 7px; }
+      .step-node { max-width: 68px; }
+      .approval-actions { flex-direction: column; }
+      .approval-actions button { width: 100%; }
+    }
+    @media (max-height: 620px) and (min-width: 821px) {
+      .conversation { padding-top: 16px; }
+      .welcome { justify-content: flex-start; min-height: 0; padding: 10px 0 16px; }
+      .welcome-mark { width: 36px; height: 36px; border-radius: 12px; }
+      .welcome-mark svg { width: 18px; height: 18px; }
+      .welcome h2 { margin: 9px 0 0; font-size: 24px; }
+      .welcome > p { display: none; }
+      .suggestions { grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 15px; }
+      .suggestion { min-height: 48px; padding: 8px 10px; }
+      .suggestion p { margin-top: 3px; font-size: 9px; }
+      .jira-suggestion { grid-column: auto; min-height: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><i data-lucide="sparkles"></i></div>
+        <div>
+          <div class="brand-name">Nemotron Agent</div>
+          <div class="brand-subtitle">LangGraph orchestrator</div>
+        </div>
+      </div>
+
+      <button class="new-chat" type="button" onclick="newConversation()">
+        <i data-lucide="plus"></i>
+        <span>New conversation</span>
+      </button>
+
+      <div class="side-group">
+        <div class="side-label">Workflow routes</div>
+        <div class="workflow-row active">
+          <div class="workflow-icon"><i data-lucide="zap"></i></div>
+          <div><div class="workflow-name">Simple parse</div><div class="workflow-meta">Amount extraction</div></div>
+        </div>
+        <div class="workflow-row">
+          <div class="workflow-icon"><i data-lucide="mail"></i></div>
+          <div><div class="workflow-name">Medium review</div><div class="workflow-meta">Draft and validate</div></div>
+        </div>
+        <div class="workflow-row">
+          <div class="workflow-icon"><i data-lucide="layers-3"></i></div>
+          <div><div class="workflow-name">Complex ingest</div><div class="workflow-meta">Quality-gated batch</div></div>
+        </div>
+        <div class="workflow-row">
+          <div class="workflow-icon"><i data-lucide="git-branch"></i></div>
+          <div><div class="workflow-name">Jira transition</div><div class="workflow-meta">Inspect, mutate, verify</div></div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-rule"></div>
+        <div class="checkpoint-note"><i data-lucide="shield-check"></i><span>Runs pause at validation failures and resume from the SQLite checkpoint after your decision.</span></div>
+        <div class="model-note">Powered by NVIDIA Nemotron</div>
+      </div>
+    </aside>
+
+    <section class="workspace">
+      <header class="topbar">
+        <div class="topbar-title">
+          <span class="live-dot"></span>
+          <div><h1>Agent workspace</h1><p id="modelName">Preparing the model connection</p></div>
+        </div>
+        <div class="topbar-actions">
+          <div class="status-pill"><span id="statusDot" class="status-dot"></span><span id="statusText">Checking connection</span></div>
+          <label class="mode-switch" title="Use deterministic local responses without API calls">
+            <input id="mockToggle" type="checkbox">
+            <span class="switch-track"><span class="switch-thumb"></span></span>
+            <span>Demo mode</span>
+          </label>
+          <button class="icon-button" type="button" onclick="newConversation()" title="New conversation"><i data-lucide="rotate-ccw"></i></button>
+        </div>
+      </header>
+
+      <div id="chatScroll" class="chat-scroll">
+        <div class="conversation">
+          <section id="welcome" class="welcome">
+            <div class="welcome-mark"><i data-lucide="bot"></i></div>
+            <h2>What should the agent work on?</h2>
+            <p>Send one request. The orchestrator will choose a workflow, execute each step, and ask before it retries a recoverable failure.</p>
+            <div class="suggestions">
+              <button class="suggestion" type="button" onclick="useSuggestion('Extract the amount from this unclear note: he mentioned a price but I did not catch the exact digits.')">
+                <div class="suggestion-head"><span>Resolve an unclear amount</span><i data-lucide="arrow-up-right"></i></div>
+                <p>Tests structured extraction and approval-based retry.</p>
+              </button>
+              <button class="suggestion" type="button" onclick="useSuggestion('Fetch user u2 and prepare a personalized welcome message.')">
+                <div class="suggestion-head"><span>Prepare a welcome message</span><i data-lucide="arrow-up-right"></i></div>
+                <p>Tests missing data validation and editorial review.</p>
+              </button>
+              <button class="suggestion" type="button" onclick="useSuggestion('Ingest the transaction batch and run its quality gate.')">
+                <div class="suggestion-head"><span>Process a transaction batch</span><i data-lucide="arrow-up-right"></i></div>
+                <p>Tests flaky sync retries and quality approval.</p>
+              </button>
+              <button class="suggestion jira-suggestion" type="button" onclick="useSuggestion('Move DEMO-1 from Pending to Approved and simulate a recoverable failure at step B.')">
+                <div class="suggestion-head"><span>Resume a Jira transition</span><i data-lucide="arrow-up-right"></i></div>
+                <p>Tests real status validation, mutation, verification, and node-level resume.</p>
+              </button>
+            </div>
+          </section>
+          <div id="messages" class="messages"></div>
+        </div>
+      </div>
+
+      <footer class="composer-wrap">
+        <div class="composer">
+          <div class="composer-box">
+            <textarea id="prompt" class="prompt" rows="1" placeholder="Ask the agent to do something..." onkeydown="handlePromptKey(event)" oninput="resizePrompt(this)"></textarea>
+            <div class="composer-bottom">
+              <div class="composer-hint"><i data-lucide="corner-down-left"></i><span>Enter to send · Shift+Enter for a new line</span></div>
+              <button id="sendButton" class="send-button" type="button" onclick="submitPrompt()" title="Send request"><i data-lucide="arrow-up"></i></button>
+            </div>
+          </div>
+          <div class="composer-disclaimer">Agent actions are visible in the conversation and recoverable failures always wait for your approval.</div>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <script>
+    let config = null;
+    let isMockMode = false;
+    let isStreaming = false;
+    let pendingApproval = false;
+    let currentThreadId = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      document.getElementById('mockToggle').addEventListener('change', (event) => {
+        isMockMode = event.target.checked;
+      });
+      await loadConfig();
+    });
+
+    async function loadConfig() {
+      try {
+        const response = await fetch('/api/config');
+        if (!response.ok) throw new Error('Could not load configuration');
+        config = await response.json();
+        const model = (config.model || 'nemotron-3-super-120b-a12b').split('/').pop();
+        document.getElementById('modelName').textContent = model;
+        const statusText = document.getElementById('statusText');
+        const statusDot = document.getElementById('statusDot');
+        if (config.nvidia_configured) {
+          statusText.textContent = config.jira_configured ? 'Nemotron + Jira connected' : 'Nemotron connected · Jira setup needed';
+          statusDot.className = 'status-dot ready';
+        } else {
+          statusText.textContent = 'Demo mode recommended';
+          statusDot.className = 'status-dot warn';
+          document.getElementById('mockToggle').checked = true;
+          isMockMode = true;
+        }
+      } catch (error) {
+        document.getElementById('statusText').textContent = 'Server unavailable';
+        document.getElementById('statusDot').className = 'status-dot warn';
+      }
+    }
+
+    function useSuggestion(text) {
+      const prompt = document.getElementById('prompt');
+      prompt.value = text;
+      resizePrompt(prompt);
+      submitPrompt();
+    }
+
+    function newConversation() {
+      document.getElementById('messages').innerHTML = '';
+      document.getElementById('welcome').classList.remove('hidden');
+      document.getElementById('prompt').value = '';
+      resizePrompt(document.getElementById('prompt'));
+      currentThreadId = null;
+      pendingApproval = false;
+      setComposerState();
+      scrollToBottom();
+    }
+
+    function handlePromptKey(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        submitPrompt();
+      }
+    }
+
+    function resizePrompt(element) {
+      element.style.height = 'auto';
+      element.style.height = Math.min(element.scrollHeight, 130) + 'px';
+    }
+
+    async function submitPrompt() {
+      const prompt = document.getElementById('prompt');
+      const text = prompt.value.trim();
+      if (!text || isStreaming || pendingApproval) return;
+
+      prompt.value = '';
+      resizePrompt(prompt);
+      document.getElementById('welcome').classList.add('hidden');
+      appendUserMessage(text);
+      const agentMessage = createAgentMessage();
+      isStreaming = true;
+      setComposerState();
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, mock_mode: isMockMode })
+        });
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          agentMessage.addError(error.detail || 'The agent could not start this run.');
+          return;
+        }
+        await consumeStream(response.body, agentMessage);
+      } catch (error) {
+        agentMessage.addError(error.message || 'Connection failed.');
+      } finally {
+        isStreaming = false;
+        setComposerState();
+      }
+    }
+
+    function appendUserMessage(text) {
+      const row = document.createElement('div');
+      row.className = 'message-row user';
+      row.innerHTML = `<div class="user-bubble">${escapeHtml(text)}</div>`;
+      document.getElementById('messages').appendChild(row);
+      scrollToBottom();
+    }
+
+    function createAgentMessage() {
+      const id = 'agent-' + Math.random().toString(36).slice(2, 9);
+      const row = document.createElement('div');
+      row.className = 'message-row';
+      row.innerHTML = `
+        <div class="assistant-avatar"><i data-lucide="bot"></i></div>
+        <div class="assistant-body">
+          <div class="assistant-label"><span>Luna agent</span><span class="label-live">working</span></div>
+          <div id="${id}-trace" class="trace">
+            <div class="trace-header">
+              <div class="trace-title"><span id="${id}-state" class="trace-state thinking"></span><span id="${id}-trace-title">Thinking through the workflow</span></div>
+              <button class="trace-toggle" type="button" onclick="toggleTrace('${id}')"><span>View trace</span><i data-lucide="chevron-down"></i></button>
+            </div>
+            <div class="trace-content">
+              <div id="${id}-steps" class="step-list"></div>
+              <div class="trace-meta"><span id="${id}-attempt">Starting</span><span>checkpointed</span></div>
+            </div>
+          </div>
+          <div id="${id}-approval" class="approval-card hidden">
+            <div class="approval-top">
+              <div class="approval-icon"><i data-lucide="circle-alert"></i></div>
+              <div style="flex:1;"><div class="approval-title">The workflow needs your approval</div><div id="${id}-approval-copy" class="approval-copy"></div><div id="${id}-grounded-options" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;"></div><input id="${id}-rectification" class="approval-input" type="text" autocomplete="off" placeholder="Optional correction or recovery note"></div>
+            </div>
+            <div class="approval-actions">
+              <button class="approve" type="button" onclick="answerApproval('${id}', 'approve')"><i data-lucide="check"></i><span>Yes, let it correct and retry</span></button>
+              <button class="reject" type="button" onclick="answerApproval('${id}', 'reject')"><i data-lucide="x"></i><span>No, stop here</span></button>
+            </div>
+          </div>
+          <div id="${id}-decision" class="decision-note hidden"></div>
+          <div id="${id}-answer" class="answer"><span class="thinking-copy">Following the graph...</span></div>
+        </div>
+      `;
+      document.getElementById('messages').appendChild(row);
+      lucide.createIcons();
+      scrollToBottom();
+
+      return {
+        id,
+        addStep(step) {
+          const list = document.getElementById(`${id}-steps`);
+          const element = document.createElement('div');
+          element.className = 'step';
+          element.innerHTML = `
+            <span class="step-node" title="${escapeHtml(step.node)}">${escapeHtml(step.node)}</span>
+            <div class="step-summary">${formatText(step.summary || 'Step completed')}
+              <details class="step-details"><summary>inspect state</summary><pre>${escapeHtml(JSON.stringify(step.details || {}, null, 2))}</pre></details>
+            </div>
+          `;
+          list.appendChild(element);
+          scrollToBottom();
+        },
+        showApproval(interrupt) {
+          currentThreadId = interrupt.thread_id || currentThreadId;
+          pendingApproval = true;
+          document.getElementById(`${id}-approval-copy`).textContent = formatApprovalCopy(interrupt);
+          const optContainer = document.getElementById(`${id}-grounded-options`);
+          if (optContainer) {
+            optContainer.innerHTML = '';
+            const opts = interrupt.grounded_options || [];
+            if (opts.length > 0) {
+              opts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'suggestion';
+                btn.style.padding = '4px 8px';
+                btn.style.fontSize = '11px';
+                btn.style.borderRadius = '6px';
+                btn.style.cursor = 'pointer';
+                btn.style.display = 'inline-block';
+                btn.textContent = `Select: ${opt}`;
+                btn.onclick = () => {
+                  const input = document.getElementById(`${id}-rectification`);
+                  if (input) input.value = opt;
+                };
+                optContainer.appendChild(btn);
+              });
+            }
+          }
+          const rectification = document.getElementById(`${id}-rectification`);
+          rectification.value = '';
+          rectification.placeholder = interrupt.failed_step === 'A_inspect'
+            ? 'Optional: corrected Jira key, e.g. PROJ-456'
+            : 'Optional correction or click an option above';
+          document.getElementById(`${id}-approval`).classList.remove('hidden');
+          document.getElementById(`${id}-state`).className = 'trace-state paused';
+          document.getElementById(`${id}-trace-title`).textContent = `Paused · ${interrupt.error_status || 'validation'} needs a decision`;
+          document.querySelector(`#${id}-trace`).previousElementSibling.querySelector('.label-live').textContent = 'waiting for you';
+          document.getElementById(`${id}-answer`).innerHTML = '';
+          lucide.createIcons();
+          setComposerState();
+          scrollToBottom();
+        },
+        addDecision(decision) {
+          const note = document.getElementById(`${id}-decision`);
+          note.classList.remove('hidden');
+          note.innerHTML = decision === 'approve'
+            ? '<i data-lucide="check-circle-2"></i><span>You approved the recovery plan. Resuming the checkpoint...</span>'
+            : '<i data-lucide="circle-stop"></i><span>You stopped this workflow.</span>';
+          lucide.createIcons();
+        },
+        setStatus(text, state) {
+          document.getElementById(`${id}-trace-title`).textContent = text;
+          document.getElementById(`${id}-state`).className = `trace-state ${state}`;
+        },
+        setFinal(result, attempt) {
+          const answer = document.getElementById(`${id}-answer`);
+          const label = document.querySelector(`#${id}-trace`).previousElementSibling.querySelector('.label-live');
+          document.getElementById(`${id}-attempt`).textContent = `attempt ${attempt || '?'}`;
+          if (result.status === 'success') {
+            this.setStatus('Workflow completed', 'done');
+            label.textContent = 'complete';
+            answer.innerHTML = formatText(successMessage(result));
+          } else {
+            this.setStatus('Workflow stopped', 'done');
+            label.textContent = 'stopped';
+            answer.innerHTML = `<div class="error-answer">${escapeHtml(result.error_message || 'The workflow ended without a result.')}</div>`;
+          }
+          pendingApproval = false;
+          setComposerState();
+          scrollToBottom();
+        },
+        addError(text) {
+          this.setStatus('Could not complete the run', 'done');
+          document.getElementById(`${id}-answer`).innerHTML = `<div class="error-answer">${escapeHtml(text)}</div>`;
+          pendingApproval = false;
+          setComposerState();
+          scrollToBottom();
+        }
+      };
+    }
+
+    async function answerApproval(messageId, decision) {
+      if (!currentThreadId || isStreaming) return;
+      const rectificationInput = document.getElementById(`${messageId}-rectification`);
+      const rectification = rectificationInput ? rectificationInput.value.trim() : '';
+      const message = {
+        id: messageId,
+        addStep(step) {
+          const list = document.getElementById(`${messageId}-steps`);
+          const element = document.createElement('div');
+          element.className = 'step';
+          element.innerHTML = `<span class="step-node" title="${escapeHtml(step.node)}">${escapeHtml(step.node)}</span><div class="step-summary">${formatText(step.summary || 'Step completed')}<details class="step-details"><summary>inspect state</summary><pre>${escapeHtml(JSON.stringify(step.details || {}, null, 2))}</pre></details></div>`;
+          list.appendChild(element);
+          scrollToBottom();
+        },
+        showApproval(interrupt) {
+          currentThreadId = interrupt.thread_id || currentThreadId;
+          pendingApproval = true;
+          document.getElementById(`${messageId}-approval-copy`).textContent = formatApprovalCopy(interrupt);
+          const rectification = document.getElementById(`${messageId}-rectification`);
+          rectification.value = '';
+          rectification.placeholder = interrupt.failed_step === 'A_inspect'
+            ? 'Optional: corrected Jira key, e.g. PROJ-456'
+            : 'Optional correction or recovery note';
+          document.getElementById(`${messageId}-approval`).classList.remove('hidden');
+          this.setStatus('Paused · another decision needed', 'paused');
+          lucide.createIcons();
+          setComposerState();
+        },
+        setStatus(text, state) {
+          document.getElementById(`${messageId}-trace-title`).textContent = text;
+          document.getElementById(`${messageId}-state`).className = `trace-state ${state}`;
+        },
+        setFinal(result, attempt) {
+          const answer = document.getElementById(`${messageId}-answer`);
+          const label = document.querySelector(`#${messageId}-trace`).previousElementSibling.querySelector('.label-live');
+          document.getElementById(`${messageId}-attempt`).textContent = `attempt ${attempt || '?'}`;
+          if (result.status === 'success') {
+            this.setStatus('Workflow completed', 'done');
+            label.textContent = 'complete';
+            answer.innerHTML = formatText(successMessage(result, true));
+          } else {
+            this.setStatus('Workflow stopped', 'done');
+            label.textContent = 'stopped';
+            answer.innerHTML = `<div class="error-answer">${escapeHtml(result.error_message || 'The workflow was stopped.')}</div>`;
+          }
+          pendingApproval = false;
+          setComposerState();
+          scrollToBottom();
+        },
+        addError(text) {
+          document.getElementById(`${messageId}-answer`).innerHTML = `<div class="error-answer">${escapeHtml(text)}</div>`;
+          pendingApproval = false;
+          setComposerState();
+        }
+      };
+
+      document.getElementById(`${messageId}-approval`).classList.add('hidden');
+      message.addDecision = (value) => {
+        const note = document.getElementById(`${messageId}-decision`);
+        note.classList.remove('hidden');
+        note.innerHTML = value === 'approve'
+          ? '<i data-lucide="check-circle-2"></i><span>You approved the recovery plan. Resuming the checkpoint...</span>'
+          : '<i data-lucide="circle-stop"></i><span>You stopped this workflow.</span>';
+        lucide.createIcons();
+      };
+      message.addDecision(decision);
+      message.setStatus(decision === 'approve' ? 'Applying self-correction' : 'Stopping workflow', 'thinking');
+      pendingApproval = false;
+      isStreaming = true;
+      setComposerState();
+
+      try {
+        const response = await fetch('/api/resume', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ thread_id: currentThreadId, decision, rectification: rectification || null, mock_mode: isMockMode })
+        });
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          message.addError(error.detail || 'The checkpoint could not be resumed.');
+          return;
+        }
+        await consumeStream(response.body, message);
+      } catch (error) {
+        message.addError(error.message || 'Connection failed while resuming.');
+      } finally {
+        isStreaming = false;
+        setComposerState();
+      }
+    }
+
+    async function consumeStream(stream, message) {
+      const reader = stream.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const blocks = buffer.split('\n\n');
+        buffer = blocks.pop();
+        blocks.forEach((block) => consumeEventBlock(block, message));
+      }
+      if (buffer.trim()) consumeEventBlock(buffer, message);
+    }
+
+    function consumeEventBlock(block, message) {
+      if (!block.trim()) return;
+      let eventType = 'message';
+      let rawData = '';
+      block.split('\n').forEach((line) => {
+        if (line.startsWith('event: ')) eventType = line.slice(7).trim();
+        if (line.startsWith('data: ')) rawData = line.slice(6).trim();
+      });
+      if (!rawData) return;
+      try {
+        const data = JSON.parse(rawData);
+        if (eventType === 'start') currentThreadId = data.thread_id;
+        if (eventType === 'step') message.addStep(data);
+        if (eventType === 'interrupt') message.showApproval({ ...data.interrupt, thread_id: currentThreadId });
+        if (eventType === 'done') {
+          if (data.is_paused) {
+            pendingApproval = true;
+            setComposerState();
+          } else if (data.last_result) {
+            message.setFinal(data.last_result, data.attempt);
+          }
+        }
+        if (eventType === 'error') message.addError(data.error || 'Agent execution failed.');
+      } catch (error) {
+        console.error('Invalid agent event', error);
+      }
+    }
+
+    function successMessage(result, corrected = false) {
+      const prefix = corrected ? '**Self-correction succeeded.** ' : '**Workflow succeeded.** ';
+      const payload = result.payload || {};
+      if (payload.amount !== undefined) return `${prefix}Extracted amount: **$${payload.amount}**.`;
+      if (payload.message) return `${prefix}Welcome message for **${payload.name}**:\n\n> ${payload.message}`;
+      if (payload.committed !== undefined) return `${prefix}Committed **${payload.committed}** valid records.`;
+      if (payload.issue_key) return `${prefix}Moved **${payload.issue_key}** from **${payload.from_status}** to **${payload.to_status}**.`;
+      return `${prefix}\n\n\`\`\`json\n${JSON.stringify(payload, null, 2)}\n\`\`\``;
+    }
+
+    function formatApprovalCopy(interrupt) {
+      const plan = interrupt.recovery_plan || {};
+      const planLine = plan.action
+        ? `Recovery plan: ${plan.action}. ${plan.reason || ''}`.trim()
+        : '';
+      return [
+        interrupt.error_message,
+        plan.question || interrupt.question,
+        planLine,
+      ].filter(Boolean).join('\n\n') || 'A recoverable failure needs your decision.';
+    }
+
+    function toggleTrace(id) {
+      const trace = document.getElementById(`${id}-trace`);
+      trace.classList.toggle('collapsed');
+    }
+
+    function setComposerState() {
+      const disabled = isStreaming || pendingApproval;
+      document.getElementById('prompt').disabled = disabled;
+      document.getElementById('sendButton').disabled = disabled;
+      document.getElementById('sendButton').title = pendingApproval ? 'Answer the approval request above' : 'Send request';
+    }
+
+    function scrollToBottom() {
+      const scroll = document.getElementById('chatScroll');
+      requestAnimationFrame(() => { scroll.scrollTop = scroll.scrollHeight; });
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[character]));
+    }
+
+    function formatText(value) {
+      let text = escapeHtml(value ?? '');
+      text = text.replace(/```json\n([\s\S]*?)\n```/g, '<pre>$1</pre>');
+      text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+      text = text.replace(/^&gt; (.*)$/gm, '<blockquote>$1</blockquote>');
+      return text.replace(/\n/g, '<br>');
+    }
+  </script>
+</body>
+</html>
