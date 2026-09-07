@@ -1,0 +1,1 @@
+"""Derived Qdrant indexing."""
